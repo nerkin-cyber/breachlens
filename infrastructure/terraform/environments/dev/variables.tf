@@ -1,7 +1,7 @@
-variable "subscription_id" {
-  description = "Azure Subscription ID"
-  type        = string
-}
+# variable "subscription_id" {
+#   description = "Azure Subscription ID"
+#   type        = string
+# }
 
 variable "location" {
   description = "Azure Region"
@@ -15,11 +15,13 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "resource_group_name" {
-  description = "Resource Group Name"
-  type        = string
+variable "storage_account_name" {
+  type    = string
+  default = "stbreachlensdev001"
 }
 
-variable "storage_account_name" {
-  type = string
+variable "postgres_location" {
+  description = "Azure region for PostgreSQL"
+  type        = string
+  default     = "centralus"
 }

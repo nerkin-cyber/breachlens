@@ -9,7 +9,7 @@ locals {
 module "resource_group" {
   source = "../../modules/resource-group"
 
-  name     = var.resource_group_name
+  name     = "rg-breachlens-dev"
   location = var.location
   tags     = local.tags
 }
@@ -51,4 +51,57 @@ module "acr" {
   name                = "acrbreachlensdev"
   resource_group_name = module.resource_group.name
   location            = var.location
+}
+
+module "log_analytics" {
+  source = "../../modules/log-analytics"
+
+  name                = "law-breachlens-dev"
+  resource_group_name = module.resource_group.name
+  location            = var.location
+}
+
+module "application_insights" {
+  source = "../../modules/application-insights"
+
+  name                = "appi-breachlens-dev"
+  location            = var.location
+  resource_group_name = module.resource_group.name
+
+  workspace_id = module.log_analytics.id
+
+  tags = local.tags
+}
+
+module "container_app_environment" {
+  source = "../../modules/container-app-environment"
+
+  name                = "cae-breachlens-dev"
+  location            = var.location
+  resource_group_name = module.resource_group.name
+
+  log_analytics_workspace_id = module.log_analytics.id
+
+  tags = local.tags
+}
+
+module "postgresql" {
+  source = "../../modules/postgresql"
+
+  name                = "psqlbldevcentral01"
+  resource_group_name = module.resource_group.name
+
+  location = var.postgres_location
+
+  administrator_login    = "breachlensadmin"
+  administrator_password = data.azurerm_key_vault_secret.postgres_admin_password.value
+
+  database_name = "breachlens"
+
+  tags = local.tags
+}
+
+data "azurerm_key_vault_secret" "postgres_admin_password" {
+  name         = "postgres-admin-password"
+  key_vault_id = module.key_vault.id
 }

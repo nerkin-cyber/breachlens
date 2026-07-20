@@ -9,7 +9,7 @@ resource "azurerm_key_vault" "this" {
   purge_protection_enabled   = true
   soft_delete_retention_days = 90
 
-  enable_rbac_authorization = true
+  rbac_authorization_enabled = true
 
   public_network_access_enabled = true
 }
